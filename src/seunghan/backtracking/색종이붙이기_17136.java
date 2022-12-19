@@ -44,6 +44,7 @@ public class 색종이붙이기_17136 {
 
 				// check out of range
 				if (nextX >= N || nextY >= N) {
+					flag = false;
 					continue;
 				}
 
