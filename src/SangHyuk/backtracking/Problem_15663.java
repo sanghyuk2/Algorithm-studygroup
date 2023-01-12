@@ -1,8 +1,6 @@
 package SangHyuk.backtracking;
 
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.Scanner;
+import java.util.*;
 
 public class Problem_15663 {
     /*
@@ -18,11 +16,12 @@ N개의 자연수 중에서 M개를 고른 수열
 출력
 한 줄에 하나씩 문제의 조건을 만족하는 수열을 출력한다. 중복되는 수열을 여러 번 출력하면 안되며, 각 수열은 공백으로 구분해서 출력해야 한다.
 
-수열은 사전 순으로 증가하는 순서로 출력해야 한다.*/
-    static int N, M;
-    static int[] nums, perm;
-    static boolean[] visit;
-    static LinkedHashSet<String> ans;
+수열은 사전 순으로 증가하는 순서로 출력해야 한다.
+* */
+    static int N,M;
+    static int[] nums;
+    static LinkedHashSet<String> answ = new LinkedHashSet<>();
+    static StringBuilder sb = new StringBuilder();
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
@@ -30,34 +29,46 @@ N개의 자연수 중에서 M개를 고른 수열
         M = sc.nextInt();
 
         nums = new int[N];
-        perm = new int[M];
-        visit = new boolean[N];
-        ans = new LinkedHashSet<>();
 
-        for (int i = 0; i < N; i++)
+        for (int i = 0; i < N; i++) {
             nums[i] = sc.nextInt();
+        }
 
         Arrays.sort(nums);
-        permutation(0);
-        ans.forEach(System.out::println);
+
+        pick(new boolean[N], new ArrayList<>(), M);
+
+        System.out.println(sb);
+
     }
 
-    static void permutation(int cnt) {
-        if (cnt == M) {
-            StringBuilder sb = new StringBuilder();
-            for (int p : perm)
-                sb.append(p).append(' ');
-            ans.add(sb.toString());
+    static void pick(boolean[] taken, List<Integer> picked, int toPick) {
+        if (toPick == 0) {
+            StringBuilder temp = new StringBuilder();
+            for (int i = 0; i < M; i++) {
+                temp.append(picked.get(i)).append(' ');
+            }
+
+            String str = temp.toString();
+
+            if (!answ.contains(str)) {
+                answ.add(str);
+                sb.append(temp).append('\n');
+            }
             return;
         }
 
         for (int i = 0; i < N; i++) {
-            if (visit[i])
+            if (taken[i]) {
                 continue;
-            visit[i] = true;
-            perm[cnt] = nums[i];
-            permutation(cnt + 1);
-            visit[i] = false;
+            }
+
+            taken[i] = true;
+            picked.add(nums[i]);
+            pick(taken, picked, toPick - 1);
+            taken[i] = false;
+            picked.remove(picked.size() - 1);
         }
     }
+
 }
